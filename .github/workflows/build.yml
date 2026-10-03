@@ -1,0 +1,68 @@
+name: Build AutoRec .deb
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install ldid xz make
+          echo "$(brew --prefix)/opt/make/libexec/gnubin" >> "$GITHUB_PATH"
+
+      - name: Install Theos and SDKs
+        env:
+          THEOS: ${{ runner.temp }}/theos
+        run: |
+          git clone --depth=1 --recursive https://github.com/theos/theos.git "$THEOS"
+          git clone --depth=1 https://github.com/theos/sdks.git "$THEOS/sdks"
+          echo "THEOS=$THEOS" >> "$GITHUB_ENV"
+          test -f "$THEOS/makefiles/common.mk"
+          test -d "$THEOS/sdks"
+
+      - name: Verify source assets
+        run: |
+          grep -q '^Version: 1.2.0$' control
+          test -f AutoM8/Info.plist
+          test -f AutoM8/Icon-60.png
+          test -f AutoM8/Icon-60@2x.png
+          test -f AutoM8/Icon-60@3x.png
+
+      - name: Build rootless package
+        run: gmake clean package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+
+      - name: Verify package contents
+        shell: bash
+        run: |
+          DEB="$(find packages -type f -name '*.deb' -print -quit)"
+          test -n "$DEB"
+          rm -rf "$RUNNER_TEMP/deb-check"
+          mkdir -p "$RUNNER_TEMP/deb-check"
+          cd "$RUNNER_TEMP/deb-check"
+          ar -x "$GITHUB_WORKSPACE/$DEB"
+          tar -xOf control.tar.* ./control | grep -E '^(Package|Version):'
+          tar -tf data.tar.* | grep -E '(^|/)AutoM8\.app(/|$)'
+          tar -tf data.tar.* | grep -E 'AutoM8\.app/(Info\.plist|Icon-60\.png)'
+
+      - name: Upload AutoRec 1.2.0 package
+        uses: actions/upload-artifact@v4
+        with:
+          name: AutoRec-deb-1.2.0
+          path: packages/*.deb
+          if-no-files-found: error

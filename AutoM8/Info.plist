@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleDisplayName</key>
+    <string>AutoM8</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.local.autom8</string>
+    <key>CFBundleName</key>
+    <string>AutoM8</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleIcons</key>
+    <dict>
+        <key>CFBundlePrimaryIcon</key>
+        <dict>
+            <key>CFBundleIconFiles</key>
+            <array>
+                <string>Icon-60</string>
+            </array>
+        </dict>
+    </dict>
+    <key>CFBundleIconFiles</key>
+    <array>
+        <string>Icon-60</string>
+        <string>Icon-60@2x</string>
+        <string>Icon-60@3x</string>
+    </array>
+    <key>CFBundleShortVersionString</key>
+    <string>1.2.0</string>
+    <key>CFBundleVersion</key>
+    <string>2</string>
+    <key>LSRequiresIPhoneOS</key>
+    <true/>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.local.autom8</string>
+            <key>CFBundleURLSchemes</key>
+            <array><string>autom8</string></array>
+        </dict>
+    </array>
+</dict>
+</plist>

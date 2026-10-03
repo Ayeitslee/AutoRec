@@ -1,0 +1,7 @@
+#!/bin/sh
+APP=/var/jb/Applications/AutoM8.app
+if [ ! -d "$APP" ]; then APP=/Applications/AutoM8.app; fi
+UICACHE=/var/jb/usr/bin/uicache
+if [ ! -x "$UICACHE" ]; then UICACHE=/usr/bin/uicache; fi
+if [ -x "$UICACHE" ] && [ -d "$APP" ]; then "$UICACHE" -p "$APP" >/dev/null 2>&1 || true; fi
+exit 0
